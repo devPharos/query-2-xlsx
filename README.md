@@ -8,6 +8,12 @@
 
 ---
 
+## 🌟 Inspiração
+
+O Query2Xlsx foi inspirado no projeto [zQry2Excel](https://github.com/dan-atilio/AdvPL/blob/master/Fontes/zQry2Excel.prw), desenvolvido pelo usuário [dan-atilio](https://github.com/dan-atilio). Agradecemos pela base fornecida, que serviu como ponto de partida para esta solução.
+
+---
+
 ## 🛠️ Tecnologias Utilizadas
 
 -   **Node.js**: Backend para o microsserviço.
@@ -148,12 +154,6 @@ Para garantir a segurança da aplicação, siga estas recomendações:
 
 ---
 
-## 🌟 Inspiração
-
-O Query2Xlsx foi inspirado no projeto [zQry2Excel](https://github.com/dan-atilio/AdvPL/blob/master/Fontes/zQry2Excel.prw), desenvolvido pelo usuário [dan-atilio](https://github.com/dan-atilio). Agradecemos pela base fornecida, que serviu como ponto de partida para esta solução.
-
----
-
 ## 📄 Licença
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
@@ -170,5 +170,4 @@ Contribuições são bem-vindas! 😊 Sinta-se à vontade para abrir issues ou e
 
 Desenvolvido por **Denis Varella**  
 📅 **Maio de 2025**  
-📫 Entre em contato: [seu-email@example.com](mailto:seu-email@example.com)  
-🔗 [GitHub](https://github.com/denisvarella)
+📫 Entre em contato: [denisvarella@gmail.com](mailto:denisvarella@gmail.com)
