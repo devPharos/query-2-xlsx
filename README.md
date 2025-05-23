@@ -2,9 +2,9 @@
 
 ![Node.js](https://img.shields.io/badge/Node.js-v16+-green) ![Excel4Node](https://img.shields.io/badge/Excel4Node-v1.8-blue) ![License](https://img.shields.io/badge/license-MIT-brightgreen)
 
-**Query2Xlsx** é um microsserviço desenvolvido para facilitar a geração de planilhas em XLSX a partir de queries no ambiente Protheus (AdvPL). Este projeto, inspirado no [zQry2Excel](https://github.com/dan-atilio/AdvPL/blob/master/Fontes/zQry2Excel.prw) do usuário [dan-atilio](https://github.com/dan-atilio), foi criado por **Denis Varella** em **Maio de 2025** utilizando **Node.js** e a biblioteca [excel4node](https://www.npmjs.com/package/excel4node) para geração de planilhas.
+**Query2Xlsx** é um microsserviço desenvolvido para viabilizar a geração de planilhas em XLSX a partir de queries no ambiente Protheus (AdvPL).
 
-🚀 O objetivo é oferecer uma solução leve e eficiente para exportar dados do Protheus para o formato XLSX, integrando-se facilmente ao Protheus.
+🚀 O objetivo é oferecer uma solução leve e eficiente para exportar dados via query para o formato XLSX, integrando-se facilmente ao Protheus.
 
 ---
 
