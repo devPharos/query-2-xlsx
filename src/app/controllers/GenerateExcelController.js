@@ -1,20 +1,25 @@
 import Sequelize from 'sequelize'
 import { resolve } from 'path'
-import { Connection, Request } from 'tedious';
-import { config } from '../../config/database';
+import { Connection, Request } from 'tedious'
+import { config } from '../../config/database'
 
 const xl = require('excel4node')
 const fs = require('fs')
 
 function unicodeToChar(text) {
-    return text.replace(/\\u[\dA-F]{4}/gi,
-           function (match) {
-                return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
-           });
- }
- 
+    return text.replace(/\\u[\dA-F]{4}/gi, function (match) {
+        return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16))
+    })
+}
 
-async function geraExcel({ res = null, Resultados = [], Nome = 'default_name', Titulos = [], Formatos = [], Tamanhos = [] }) {
+async function geraExcel({
+    res = null,
+    Resultados = [],
+    Nome = 'default_name',
+    Titulos = [],
+    Formatos = [],
+    Tamanhos = [],
+}) {
     const name = `${Nome}_${Date.now()}`
     const path = `${resolve(
         __dirname,
@@ -92,7 +97,7 @@ async function geraExcel({ res = null, Resultados = [], Nome = 'default_name', T
             horizontal: 'center',
             vertical: 'center',
         },
-        numberFormat: 'dd/mm/yyyy'
+        numberFormat: 'dd/mm/yyyy',
     })
 
     var styleBodyRight = wb.createStyle({
@@ -127,17 +132,19 @@ async function geraExcel({ res = null, Resultados = [], Nome = 'default_name', T
         numberFormat: 'R$ #,##0.00;[Red]-R$ #,##0.00; -',
     })
 
-    if(Resultados.length === 0) {
+    if (Resultados.length === 0) {
         const err = 'Registros não encontrados'
         const stats = 'Registros não encontrados'
         const ret = res.status(400).json({ err, stats })
         return ret
     }
-    
-    let row = 1;
+
+    let row = 1
 
     Titulos.forEach((titulo, index) => {
-        ws.cell(row, index + 1).string(unicodeToChar(titulo)).style(styleHeading)
+        ws.cell(row, index + 1)
+            .string(unicodeToChar(titulo))
+            .style(styleHeading)
     })
 
     Tamanhos.forEach((tamanho, index) => {
@@ -145,27 +152,45 @@ async function geraExcel({ res = null, Resultados = [], Nome = 'default_name', T
     })
 
     Resultados.forEach((rows) => {
-        ++row;
+        ++row
         rows.forEach((valor, index) => {
-            if(Formatos[index] === 1) {
-                ws.cell(row, index + 1).string(valor || '').style(styleBody)
-            } else if(Formatos[index] === 4) {
-                if(!valor) {
+            if (Formatos[index] === 1) {
+                ws.cell(row, index + 1)
+                    .string(valor || '')
+                    .style(styleBody)
+            } else if (Formatos[index] === 4) {
+                if (!valor) {
                     ws.cell(row, index + 1).string('')
-                } else if(typeof valor === 'string' && valor.includes('/')) {
+                } else if (typeof valor === 'string' && valor.includes('/')) {
                     const dataArray = valor.split('/')
-                    const dataValor = dataArray[2]+'-'+dataArray[1]+'-'+dataArray[0];
-                    ws.cell(row, index + 1).date(dataValor).style(styleBodyCenter)
-                } else if(typeof valor === 'string' && !valor.includes('-')) {
-                    const dataValor = valor.substring(0,4)+'-'+valor.substring(4,6)+'-'+valor.substring(6,8)
-                    ws.cell(row, index + 1).date(dataValor).style(styleBodyCenter)
+                    const dataValor =
+                        dataArray[2] + '-' + dataArray[1] + '-' + dataArray[0]
+                    ws.cell(row, index + 1)
+                        .date(dataValor)
+                        .style(styleBodyCenter)
+                } else if (typeof valor === 'string' && !valor.includes('-')) {
+                    const dataValor =
+                        valor.substring(0, 4) +
+                        '-' +
+                        valor.substring(4, 6) +
+                        '-' +
+                        valor.substring(6, 8)
+                    ws.cell(row, index + 1)
+                        .date(dataValor)
+                        .style(styleBodyCenter)
                 } else {
-                    ws.cell(row, index + 1).date(valor).style(styleBodyRight)
+                    ws.cell(row, index + 1)
+                        .date(valor)
+                        .style(styleBodyRight)
                 }
-            } else if(Formatos[index] === 3) {
-                ws.cell(row, index + 1).number(valor || 0).style(styleCurrency)
+            } else if (Formatos[index] === 3) {
+                ws.cell(row, index + 1)
+                    .number(valor || 0)
+                    .style(styleCurrency)
             } else {
-                ws.cell(row, index + 1).number(valor || 0).style(styleNumeric)
+                ws.cell(row, index + 1)
+                    .number(valor || 0)
+                    .style(styleNumeric)
             }
         })
     })
@@ -184,7 +209,7 @@ async function geraExcel({ res = null, Resultados = [], Nome = 'default_name', T
                         console.log(err)
                     }
                 })
-            }, 360000)
+            }, process.env.TEMPO_PARA_EXCLUSAO || 360000)
             return res.json({ path, name })
         }
     })
@@ -194,35 +219,41 @@ async function geraExcel({ res = null, Resultados = [], Nome = 'default_name', T
 const { Op } = Sequelize
 class GenerateExcelController {
     async store(req, res) {
-        const { Query, Nome, Titulos, Formatos, Tamanhos } = req.body;
+        const { Query, Nome, Titulos, Formatos, Tamanhos } = req.body
 
-        var conn = new Connection(config);
-        conn.on('connect', function(err) {
-            const request = new Request(Query, function(err) {
+        var conn = new Connection(config)
+        conn.on('connect', function (err) {
+            const request = new Request(Query, function (err) {
                 if (err) {
-                    console.log(err);
+                    console.log(err)
                 }
-            });
-            const Resultados = [];
-            request.on('row', function(columns) {
-                const row = [];
-                columns.forEach(function(column, index) {
-                    row.push(column.value);
-                });
-                Resultados.push(row);
-            });
+            })
+            const Resultados = []
+            request.on('row', function (columns) {
+                const row = []
+                columns.forEach(function (column, index) {
+                    row.push(column.value)
+                })
+                Resultados.push(row)
+            })
 
             // Close the connection after the final event emitted by the request, after the callback passes
-            request.on("requestCompleted", async function (rowCount, more) {
-                conn.close();
-                await geraExcel({ res, Resultados, Nome, Titulos, Formatos, Tamanhos })
-            });
+            request.on('requestCompleted', async function (rowCount, more) {
+                conn.close()
+                await geraExcel({
+                    res,
+                    Resultados,
+                    Nome,
+                    Titulos,
+                    Formatos,
+                    Tamanhos,
+                })
+            })
 
-            conn.execSql(request);
-        });
+            conn.execSql(request)
+        })
 
-        conn.connect();
-    
+        conn.connect()
     }
 }
 
